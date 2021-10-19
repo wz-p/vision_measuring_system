@@ -43,6 +43,9 @@ class Config:
         self.M_right = np.dot(self.right_camera_matrix, self.RT)
 
     def get_Ab(self, u_left, v_left, u_right, v_right):
+        """
+
+        """
         A = np.mat(np.zeros((4, 3)))
         A[0, 0] = u_left * self.M_left[2, 0] - self.M_left[0, 0]
         A[0, 1] = u_left * self.M_left[2, 1] - self.M_left[0, 1]
