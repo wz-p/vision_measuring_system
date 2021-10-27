@@ -14,27 +14,29 @@ if cap.isOpened() == 0:
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 4416)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1242)
 
-path = ".\\pic_calibration\\"  # 图片存储路径
+path = ".\\accuracyTest\\"  # 图片存储路径
 cv2.namedWindow("left")
 cv2.namedWindow("right")
 counter = 0
-folder_left = ".\\pic_calibration\\left\\"  # 照片存储路径
-folder_right = ".\\pic_calibration\\right\\"
+z_distance = 0
+folder_left = ".\\accuracyTest\\left_0\\"  # 照片存储路径
+folder_right = ".\\accuracyTest\\right_0\\"
 if not os.path.exists(folder_left):
     os.makedirs(folder_left)
 if not os.path.exists(folder_right):
     os.makedirs(folder_right)
 
+
 def shot(image_left, image_right):
     global counter
     path_left = folder_left + 'left' + "_" + str(counter) + ".bmp"
-    path_right = folder_right  + 'right' + "_" + str(counter) + ".bmp"
+    path_right = folder_right + 'right' + "_" + str(counter) + ".bmp"
     cv2.imwrite(path_left, image_left)
     cv2.imwrite(path_right, image_right)
     print("图片保存于: " + path + '--------' + str(counter))
 
 
-while True :
+while True:
     # Get a new frame from camera
     ret, frame = cap.read()
     # Extract left and right images from side-by-side
@@ -44,7 +46,9 @@ while True :
 
     # Display images
     # cv2.imshow("frame", frame)q
+    cv2.namedWindow("left", 0)
     cv2.imshow("left", image_left)
+    cv2.namedWindow("right", 0)
     cv2.imshow("right", image_right)
 
     key = cv2.waitKey(1)
