@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 
-img=cv2.imread("1.jpg")
+img=cv2.imread("1-杂物-圆锥体.png")
 img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 img = cv2.resize(img,(380, 640))
 ret,a = cv2.threshold(img,110,255,cv2.THRESH_BINARY)
