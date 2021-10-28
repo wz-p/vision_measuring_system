@@ -26,4 +26,3 @@ print(corners.shape)
 zed = ZED_config()
 objPoints = np.mgrid[0:260:14j, 0:120:7j,  0:200:10j].T.reshape(-1,7,3)
 
-
