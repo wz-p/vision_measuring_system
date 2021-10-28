@@ -19,8 +19,8 @@ cv2.namedWindow("left")
 cv2.namedWindow("right")
 counter = 0
 z_distance = 0
-folder_left = ".\\accuracyTest\\left_0\\"  # 照片存储路径
-folder_right = ".\\accuracyTest\\right_0\\"
+folder_left = ".\\detect_pic\\pic_1\\left\\"  # 照片存储路径
+folder_right = ".\\detect_pic\\pic_1\\right\\"
 if not os.path.exists(folder_left):
     os.makedirs(folder_left)
 if not os.path.exists(folder_right):
@@ -46,9 +46,11 @@ while True:
 
     # Display images
     # cv2.imshow("frame", frame)q
-    cv2.namedWindow("left", 0)
+    # cv2.namedWindow("left", 0)
+    # cv2.resizeWindow("left", 1104, 621)
     cv2.imshow("left", image_left)
-    cv2.namedWindow("right", 0)
+    # cv2.namedWindow("right", 0)
+    # cv2.resizeWindow("right", 1104, 621)
     cv2.imshow("right", image_right)
 
     key = cv2.waitKey(1)
