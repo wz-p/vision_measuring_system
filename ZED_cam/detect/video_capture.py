@@ -10,7 +10,7 @@ if cap.isOpened() == 0:
 # Set the video resolution to HD2k (4416*1242)
 # 1080p	3840x1080
 # 720p	2560x720
-# WVGA	1344x376
+# WVGA	1344x37611
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 4416)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1242)
 

@@ -1,9 +1,18 @@
+#!/user/bin/env python
+# -*- coding:utf-8 -*-
+# author：wangzhen
+# create：2022/6/9 009 10:15
+# Software: PyCharm
+##################################
+# 读取相机中的图片并把左右视图分别保存
+##################################
+
 import cv2
 import numpy
 import os
 
 # Open the ZED camera
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 if cap.isOpened() == 0:
     exit(-1)
 
@@ -14,23 +23,21 @@ if cap.isOpened() == 0:
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 4416)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1242)
 
-path = ".\\accuracyTest\\"  # 图片存储路径
+path = "..\\src_video_and_img\\image_capture\\"  # 图片存储路径
 cv2.namedWindow("left")
 cv2.namedWindow("right")
 counter = 0
 z_distance = 0
-folder_left = ".\\detect_pic\\pic_1\\left\\"  # 照片存储路径
-folder_right = ".\\detect_pic\\pic_1\\right\\"
-if not os.path.exists(folder_left):
-    os.makedirs(folder_left)
-if not os.path.exists(folder_right):
-    os.makedirs(folder_right)
+path_left = path + 'left' + "_" + str(counter) + ".bmp"
+path_right = path + 'right' + "_" + str(counter) + ".bmp"
+if not os.path.exists(path_left):
+    os.makedirs(path_left)
+if not os.path.exists(path_right):
+    os.makedirs(path_right)
 
 
 def shot(image_left, image_right):
     global counter
-    path_left = folder_left + 'left' + "_" + str(counter) + ".bmp"
-    path_right = folder_right + 'right' + "_" + str(counter) + ".bmp"
     cv2.imwrite(path_left, image_left)
     cv2.imwrite(path_right, image_right)
     print("图片保存于: " + path + '--------' + str(counter))

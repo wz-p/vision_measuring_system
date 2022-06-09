@@ -15,31 +15,60 @@ p2  0           0
 k3  -0.0057     -0.0057
 """
 
+"""matlab标定数据
+def __init__(self):
+    self.left_camera_matrix = np.array([[1061.83297, 0., 1098.43688],   # 左相机内参
+                                        [0., 1061.32983, 606.02156],
+                                        [0., 0., 1.]])
+    self.left_distortion = np.array([-0.0421, 0.0118, -0.0004, 0, -0.0057])    # 左相机畸变系数k1, k2, p1, p2, k3=[-0.0577]
+    self.right_camera_matrix = np.array([[1058.80814, 0., 1098.79960],        # 右相机内参
+                                         [0., 1057.78468, 608.69985],
+                                         [0., 0., 1.]])
+    self.right_distortion = np.array([-0.0431, 0.0133, -0.0004, 0, -0.0057])  # 右相机畸变系数k1, k2, p1, p2, k3=[-0.0686]
+
+    self.essential_matrix = np.array([[-0.0004, 0.1757, -0.3630],       # 本征矩阵
+                                      [0.1335, 0.3338, 120.1385],
+                                      [0.0046, -120.1390, 0.3332]])
+    self.fundamental_matrix = np.array([[0., 0., -0.0004],          # 基础矩阵
+                                      [0., 0., 0.1133],
+                                      [-0.0001, -0.1135, 0.4642]])
+"""
+# left_distortion = np.array([-0.1051, 0.1190, -0.0001811, -0.00090466, -0.0577])
+# right_distortion = np.array([-0.1085, 0.1307, 0.00019474, -0.00039216, -0.0686])
+
 
 class ZED_config(object):
     def __init__(self):
-        self.left_camera_matrix = np.array([[1061.83297, 0., 1098.43688],   # 左相机内参
-                                            [0., 1061.32983, 606.02156],
+        """
+        相机参数为预标定数据，精度较高
+        """
+        self.left_camera_matrix = np.array([[1061.3500, 0., 1103.0200],  # 左相机内参
+                                            [0., 1060.2500, 605.5170],
                                             [0., 0., 1.]])
-        self.left_distortion = np.array([[-0.1051, 0.1190, -0.0001811, -0.00090466, -0.0577]])    # 左相机畸变系数k1, k2, p1, p2, k3=[-0.0577]
-        self.right_camera_matrix = np.array([[1058.80814, 0., 1098.79960],        # 右相机内参
-                                             [0., 1057.78468, 608.69985],
+        self.left_distortion = np.array(
+            [[-0.0421, 0.0118, -0.0004, 0, -0.0057]])  # 左相机畸变系数k1, k2, p1, p2, k3=[-0.0577]
+        self.right_camera_matrix = np.array([[1058.9000, 0., 1097.3900],  # 右相机内参
+                                             [0., 1057.1801, 607.2450],
                                              [0., 0., 1.]])
-        self.right_distortion = np.array([-0.1085, 0.1307, 0.00019474, -0.00039216, -0.0686])  # 右相机畸变系数k1, k2, p1, p2, k3=[-0.0686]
+        self.right_distortion = np.array([-0.0431, 0.0133, -0.0004, 0, -0.0057])  # 右相机畸变系数k1, k2, p1, p2, k3=[-0.0686]
 
-        self.essential_matrix = np.array([[-0.0004, 0.1757, -0.3630],       # 本征矩阵
+        self.essential_matrix = np.array([[-0.0004, 0.1757, -0.3630],  # 本征矩阵
                                           [0.1335, 0.3338, 120.1385],
                                           [0.0046, -120.1390, 0.3332]])
-        self.fundamental_matrix = np.array([[0., 0., -0.0004],          # 基础矩阵
-                                          [0., 0., 0.1133],
-                                          [-0.0001, -0.1135, 0.4642]])
+        self.fundamental_matrix = np.array([[0., 0., -0.0004],  # 基础矩阵
+                                            [0., 0., 0.1133],
+                                            [-0.0001, -0.1135, 0.4642]])
 
-        # om = np.array([0.01911, 0.03125, -0.00960])  # 旋转关系向量
-        # R = cv2.Rodrigues(om)[0]  # 使用Rodrigues变换将om变换为R
-        self.R = np.array([[1., 0.0030, 0.0026],
-                           [-0.003, 1., 0.0028],
-                           [-0.0026, -0.0028, 1.]])
-        self.T = np.array([[-120.1389], [-0.3625], [-0.1767]])  # 平移关系向量,第一个为基线长度
+        om = np.array([0.0021, 0.0025, 0.0028])  # 旋转关系向量
+        self.R = cv2.Rodrigues(om)[0]  # 使用Rodrigues变换将om变换为R
+        self.T = np.array([[119.4570], [-0.3341], [0.2413]])
+
+
+        # self.R = np.array([[1., 0.0030, 0.0026],
+        #                    [-0.003, 1., 0.0028],
+        #                    [-0.0026, -0.0028, 1.]])
+        # self.T = np.array([[-120.1389], [-0.3625], [-0.1767]])  # 平移关系向量,第一个为基线长度
+
 
         self.size = (2208, 1242)  # 图像尺寸
 
@@ -62,12 +91,14 @@ class ZED_config(object):
         self.R1, self.R2, self.P1, self.P2, self.Q, self.validPixROI1, self.validPixROI2 = cv2.stereoRectify(
             self.left_camera_matrix, self.left_distortion,
             self.right_camera_matrix, self.right_distortion,
-            self.size, self.R, self.T)
+            self.size, self.R, self.T,
+            flags=0)
         # 计算更正map
         self.left_map1, self.left_map2 = cv2.initUndistortRectifyMap(self.left_camera_matrix, self.left_distortion,
                                                                      self.R1, self.P1, self.size, cv2.CV_16SC2)
         self.right_map1, self.right_map2 = cv2.initUndistortRectifyMap(self.right_camera_matrix, self.right_distortion,
                                                                        self.R2, self.P2, self.size, cv2.CV_16SC2)
+
 
         self.M_left = np.hstack((self.left_camera_matrix, [[0.], [0.], [0.]]))
         self.RT = np.hstack((self.R, self.T))
@@ -106,14 +137,32 @@ class ZED_config(object):
 
 if __name__ == '__main__':
     zed = ZED_config()
+    # 读取标定板图片
     for i in range(0, 36):
         t = str(i)
-        img2 = cv2.imread(r'.\pic_calibration\right\right_' + t + '.bmp', 0)  # 右视图
-        img1 = cv2.imread(r'.\pic_calibration\left\left_' + t + '.bmp', 0)  # 左视图
-        left_rectified = zed.undistort(img1, zed.left_map1, zed.left_map2)
-        right_rectified = zed.undistort(img2, zed.right_map1, zed.right_map2)
+        image_right = cv2.imread(r'.\pic_calibration\right\right_' + t + '.bmp')  # 右视图
+        image_left = cv2.imread(r'.\pic_calibration\left\left_' + t + '.bmp')  # 左视图
+        left_rectified = zed.undistort(image_left, zed.left_map1, zed.left_map2)
+        right_rectified = zed.undistort(image_right, zed.right_map1, zed.right_map2)
 
+
+    # 读取圆点图片
+    # for i in range(22):
+    #     image_left = cv2.imread(r'E:\SynologyDrive\PycharmProject\vision_measuring_system\ZED_cam\detect\picture_circle\left_0\left_' + str(i) + '.bmp')
+    #     image_right = cv2.imread(r'E:\SynologyDrive\PycharmProject\vision_measuring_system\ZED_cam\detect\picture_circle\right_0\right_' + str(i) + '.bmp')
+    #     left_rectified = zed.undistort(image_left, zed.left_map1, zed.left_map2)
+    #     right_rectified = zed.undistort(image_right, zed.right_map1, zed.right_map2)
+
+
+        # a = np.hstack((image_left, image_right))
         a = np.hstack((left_rectified, right_rectified))
+        y = np.arange(0, 1200, 40)
+        point_color = (0, 255, 0)  # BGR
+        thickness = 1
+        lineType = 8
+        for i in range(len(y)):
+            cv2.line(a, (0, y[i]), (4416, y[i]), point_color, thickness)
+
         cv2.namedWindow('a', 0)
         # cv2.resize(a, ())
         cv2.imshow('a', a)
